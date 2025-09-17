@@ -1,0 +1,21 @@
+syntax = "proto3";
+
+package test_stream;
+
+message TestStreamRequest{
+  string id = 1;
+}
+
+message TestStreamResponse {
+  int32 number = 1;
+  string id = 2;
+}
+
+message CancelTestStreamRequest{}
+
+message CancelTestStreamResponse{}
+
+service TestStreamService {
+  rpc TestStreamRPC(TestStreamRequest) returns (stream TestStreamResponse) {}
+  rpc CancelTestStreamRPC(CancelTestStreamRequest) returns (CancelTestStreamResponse) {}
+}

@@ -1,0 +1,54 @@
+syntax = "proto3";
+
+package testing_bi_di;
+
+//these should be sent back to the client with onCompleted() as trailing MetaData
+enum StreamDownReasons {
+  UNKNOWN_STREAM_STOP_REASON = 0; //nothing was set, this will be set sometimes, just re-connect once and if it doesn't work end
+  INVALID_CREDENTIALS = 1; //a login problem, may send back return_status with it
+  STREAM_TIMED_OUT = 2; //this means the alarm timed the stream out
+  STREAM_CANCELED_BY_ANOTHER_STREAM = 3; //this means a new stream started and canceled the running one (another user logged in)
+  SERVER_SHUTTING_DOWN = 4; //the server is shutting down, this should go to a different server
+}
+
+message RequestMessageInfoRequest {
+  string message = 1;
+}
+
+message RefreshChatStreamRequest {
+  int64 new_time_until_expiration_in_millis = 1;
+}
+
+message TestingBiDiRequest {
+  int64 time_for_request_to_run_in_millis = 3;
+
+  oneof client_request {
+    RequestMessageInfoRequest request_message_info = 1;
+    RefreshChatStreamRequest refresh_chat_stream = 2;
+  }
+}
+
+message RequestMessageInfoResponse {
+  string message = 1;
+}
+
+message RefreshStreamResponse {
+  int64 chat_stream_expiration_timestamp_in_millis = 1;
+  //TODO: want an 'update successful' bool in here to be false
+}
+
+message ReturnMessageFromInjection {
+  string message = 1;
+}
+
+message TestingBiDiResponse {
+  oneof server_response {
+    RequestMessageInfoResponse request_message_info_response = 1;
+    RefreshStreamResponse refresh_stream_response = 2;
+    ReturnMessageFromInjection return_message_from_injection = 3;
+  }
+}
+
+service TestingBiDiService {
+  rpc TestingBiDiRPC (stream TestingBiDiRequest) returns (stream TestingBiDiResponse) {}
+}

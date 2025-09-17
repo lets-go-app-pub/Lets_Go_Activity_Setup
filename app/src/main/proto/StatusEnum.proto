@@ -1,0 +1,18 @@
+syntax = "proto3";
+
+option java_package = "statusenum";
+
+//IMPORTANT: -----These are tied to the LoginHelperFunction return values, 0-7 should never be changed-----
+enum ReturnStatus{
+  CONNECTION_ERROR = 0; //means no value was set probably a connection error
+  LG_ERROR = 1; //error when attempting to refresh token
+  SUCCESS = 2; //successfully updated login token
+  LOGGED_ACCOUNT_NOT_FOUND = 3; //no logged in account was found
+  LOGGED_IN_ELSEWHERE = 4; //using token failed to login to account
+  EXPIRED = 5; //login token has expired
+  NOT_ENOUGH_INFO = 6; //verified account does not have enough info
+  INVALID_LOGIN_TOKEN = 7; //token string passed is not valid
+  OUTDATED_VERSION = 8; //outdated version of app used refuse to allow login
+  NO_VERIFIED_ACCOUNT = 9; //no verified account attached to this login exists
+  UNKNOWN = 10; //unknown problem (probably something wrong with server code)
+}

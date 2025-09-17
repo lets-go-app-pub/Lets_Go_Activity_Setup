@@ -1,0 +1,13 @@
+syntax = "proto3";
+
+option java_package = "categorytimeframe";
+
+message CategoryTimeFrameMessage {
+  int64 start_time_frame = 1; //start time is expected to be less than or equal to stop time
+  int64 stop_time_frame = 2; //stop time is expected to be greater than or equal to start time
+}
+
+message CategoryActivityMessage {
+  int32 activity_type = 1; //this is an enum declared inside android and on the server
+  repeated CategoryTimeFrameMessage time_frame_array = 2; //these are the time frames active on the activity
+}

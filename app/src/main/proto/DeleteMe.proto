@@ -1,0 +1,18 @@
+syntax = "proto3";
+
+package delete_me;
+
+message DeleteMeRequest {
+  int32 delete_me_request = 1;
+}
+
+message DeleteMeResponse {
+  int32 delete_me_response = 1;
+  repeated string delete_me_list = 2;
+}
+
+service DeleteMeService {
+  rpc TestingRPC(DeleteMeRequest) returns (DeleteMeResponse) {}
+  rpc DeleteMeServerRPC(DeleteMeRequest) returns (stream DeleteMeResponse) {}
+  rpc DeleteMeClientRPC(stream DeleteMeRequest) returns (DeleteMeResponse) {}
+}

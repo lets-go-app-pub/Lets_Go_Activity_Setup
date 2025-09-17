@@ -1,0 +1,41 @@
+syntax = "proto3";
+
+option java_package = "requestmessages";
+
+message BirthdayMessage {
+  int32 birth_year = 1;
+  int32 birth_month = 2;
+  int32 birth_day_of_month = 3;
+  int32 age = 4;
+}
+
+message EmailMessage {
+  string email = 1;
+  bool requires_email_verification = 2; //NOTE: this is not required as pre-login info
+}
+
+message PictureMessage {
+  bytes file_in_bytes = 1; //the bytes for the file itself
+  int32 file_size = 2; //the size of the file, used to check for corrupted data
+}
+
+message PostLoginMessage {
+  string user_bio = 1;
+  string user_city = 2;
+  repeated string gender_range = 3; //list of the genders user is willing to match with
+  int32 min_age = 4; //minimum end of age range (inclusive)
+  int32 max_age = 5; //maximum end of age range (inclusive)
+  int32 max_distance = 6; //max distance user is willing to match (in miles)
+}
+
+//request server activities and categories specific request
+message ServerActivityOrCategoryMessage {
+  int32 index = 1; //index number of category or activity to be stored
+  string name = 2; //name of category or activity
+  //NOTE: if the name is "~" then the activity or category does not exist
+  int32 min_age = 3; //minimum age that can see this; ex: 18 would mean 18+ can see it
+
+  //These values are only set when response represents an activity, not a category
+  int32 category_index = 4; //index of the icon this activity uses
+  int32 icon_index = 5; //index of the icon this activity is used in
+}

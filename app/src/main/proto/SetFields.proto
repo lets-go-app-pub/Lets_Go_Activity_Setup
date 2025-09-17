@@ -1,0 +1,125 @@
+syntax = "proto3";
+
+option java_multiple_files = true;
+
+package setfields;
+
+import "StatusEnum.proto";
+import "CategoryTimeFrame.proto";
+
+//set a type of feedback to its respective collection
+message SetFeedbackRequest {
+  string logged_in_token = 1; //the log in account ID
+  double lets_go_version = 2; //pass current version of app
+
+  enum FeedbackType{
+    UNKNOWN = 0;
+    ACTIVITY_SUGGESTION = 1;
+    BUG_REPORT = 2;
+    OTHER_FEEDBACK = 3;
+  }
+
+  FeedbackType feedback_type = 3; //the type of feedback returned
+  string info = 4; //the string the user entered as feedback
+  string activity_name = 5; //only used with ACTIVITY_SUGGESTION the name of the suggested activity
+}
+
+//set a field that is type string
+message SetStringRequest {
+  string logged_in_token = 1; //the log in account ID
+  double lets_go_version = 2; //pass current version of app
+  string set_string = 3; //the value to be set
+}
+
+//set a field that is type string
+message SetEmailRequest {
+  string logged_in_token = 1; //the log in account ID
+  double lets_go_version = 2; //pass current version of app
+  string set_email = 3; //the value to be set
+}
+
+//set birthday fields
+message SetBirthdayRequest {
+  string logged_in_token = 1; //the logged in account ID
+  double lets_go_version = 2; //pass current version of app
+  int32 birth_year = 3; //birth year to be set
+  int32 birth_month = 4; //birth month to be set
+  int32 birth_day_of_month = 5; //birth day of month to be set
+}
+
+//set a picture field
+message SetPictureRequest {
+  string logged_in_token = 1; //the log in account ID
+  double lets_go_version = 2; //pass current version of app
+  bytes file_in_bytes = 3; //the bytes for the file itself
+  int32 file_size = 4; //the size of the file, used to check for corrupted data
+  int32 picture_array_index = 5; //index of the picture array requested (starts at 0)
+}
+
+//set the categories field
+message SetCategoriesRequest {
+  string logged_in_token = 1; //the log in account ID
+  double lets_go_version = 2; //pass current version of app
+  repeated CategoryActivityMessage category = 3; //all categories array
+}
+
+//set age range
+message SetAgeRangeRequest {
+  string logged_in_token = 1; //the log in account ID
+  double lets_go_version = 2; //pass current version of app
+  int32 min_age = 3; //all minimum end of age range (inclusive)
+  int32 max_age = 4; //all maximum end of age range (inclusive)
+}
+
+//set gender range
+message SetGenderRangeRequest {
+  string logged_in_token = 1; //the log in account ID
+  double lets_go_version = 2; //pass current version of app
+  repeated string gender_range = 3; //list of the genders user is willing to match with
+}
+
+//set user max distance
+message SetMaxDistanceRequest {
+  string logged_in_token = 1; //the log in account ID
+  double lets_go_version = 2; //pass current version of app
+  int32 max_distance = 3; //maximum distance user is willing to match with (in miles)
+}
+
+//generic set field response
+message SetFieldResponse {
+  ReturnStatus return_status = 1; //return status
+  /** IF TIMESTAMP IS -2 THEN INVALID DATA WAS PASSED **/
+  int64 timestamp = 2; //timestamp the item was updated + 1 (for storage reasons), -1 if data was not stored, -2 if data is invalid
+}
+
+//birthday set field response
+message SetBirthdayResponse {
+  ReturnStatus return_status = 1; //return status
+  int32 age = 2; //birth year to be set
+  /** IF TIMESTAMP IS -2 THEN INVALID DATA WAS PASSED **/
+  int64 timestamp = 3; //timestamp the item was updated + 1 (for storage reasons), -1 if data was not stored, -2 if data is invalid
+}
+
+//set feedback response
+message SetFeedbackResponse {
+  ReturnStatus return_status = 1; //return status
+}
+
+service SetFieldsService {
+
+  rpc SetBirthdayRPC(SetBirthdayRequest) returns (SetBirthdayResponse) {} //Sets birthday info in the server //3 ints
+  rpc SetEmailRPC(SetEmailRequest) returns (SetFieldResponse) {} //Sets email address info in the server //string
+  rpc SetGenderRPC(SetStringRequest) returns (SetFieldResponse) {} //Sets gender info in the server //int and string
+  rpc SetFirstNameRPC(SetStringRequest) returns (SetFieldResponse) {} //Sets gender info in the server //string
+  rpc SetPicturesRPC(SetPictureRequest) returns (SetFieldResponse) {} //Sets pictures info in the server, //bytes int
+  rpc SetCategoriesRPC(SetCategoriesRequest) returns (SetFieldResponse) {} //Sets categories info in the server //message array
+
+  rpc SetAgeRangeRPC(SetAgeRangeRequest) returns (SetFieldResponse) {} //Sets age range in server //2 ints
+  rpc SetGenderRangeRPC(SetGenderRangeRequest) returns (SetFieldResponse) {} //Sets gender range in server //repeated string
+  rpc SetUserBioRPC(SetStringRequest) returns (SetFieldResponse) {} //Sets user bio in server //string
+  rpc SetUserCityRPC(SetStringRequest) returns (SetFieldResponse) {} //Sets user city in server //string
+  rpc SetMaxDistanceRPC(SetMaxDistanceRequest) returns (SetFieldResponse) {} //Sets max distance in server //int
+
+  //TODO: this could technically be spammed, not sure I should allow that, or can everything be spammed?
+  rpc SetFeedbackRPC(SetFeedbackRequest) returns (SetFeedbackResponse) {} //Stores feedback in the server
+}

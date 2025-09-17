@@ -1,0 +1,132 @@
+syntax = "proto3";
+
+option java_multiple_files = true;
+
+package requestfields;
+
+import "StatusEnum.proto";
+import "CategoryTimeFrame.proto";
+import "RequestMessages.proto";
+
+// generic request message
+message InfoFieldRequest {
+  string logged_in_token = 1; // the log in account ID
+  double lets_go_version = 2; // pass current version of app
+}
+
+// generic request message
+message InfoArrayElementRequest {
+  string logged_in_token = 1; // the log in account ID
+  double lets_go_version = 2; // pass current version of app
+  int32 index_of_array =
+      3; // index of the array requested (only used for pictures at the moment)
+}
+
+// request server icons specific request
+message ServerIconsRequest {
+  string logged_in_token = 1; // the log in account ID
+  double lets_go_version = 2; // pass current version of app
+  repeated int32 icon_index =
+      3; // icon index that need updated (login function runs the check)
+}
+
+// generic response message
+message InfoFieldResponse {
+  ReturnStatus return_status = 1;
+  oneof return_data { // returns 1 of the below parameters
+    string return_string = 2;
+    int32 return_int = 3;
+  }
+  int64 timestamp = 4; // the new timestamp to update the client
+}
+
+// birthday specific response
+message BirthdayResponse {
+  ReturnStatus return_status = 1;
+  BirthdayMessage birthday_info = 2;
+  int64 timestamp = 3; // the new timestamp to update the client
+}
+
+// birthday specific response
+message EmailResponse {
+  ReturnStatus return_status = 1;
+  EmailMessage email_info = 2;
+  int64 timestamp = 3; // the new timestamp to update the client
+}
+
+// picture specific response
+message PictureResponse {
+  ReturnStatus return_status = 1;
+  PictureMessage picture_info = 2;
+  int64 timestamp = 3; // the new timestamp to update the client
+}
+
+// NOTE: the request here will request the entire group of categories, it
+// shouldn't be much data categories specific response
+message CategoriesResponse {
+  ReturnStatus return_status = 1;
+  repeated CategoryActivityMessage categories_array =
+      2; // the entire list of categories, the messages are imported
+  int64 timestamp = 3; // the new timestamp to update the client
+}
+
+// request for info after login is complete
+message PostLoginInfoResponse {
+  ReturnStatus return_status = 1;
+  PostLoginMessage post_login_info = 2;
+  int64 timestamp = 3; // the new timestamp to update the client
+}
+
+// request server icons specific response
+message ServerIconsResponse {
+  ReturnStatus return_status = 1;
+  int32 index_number = 2;              // index number of icon to update
+  bytes compressed_image = 3;          // compressed icon image basic
+  bytes compressed_image_inverted = 4; // compressed icon image chosen
+  bytes compressed_image_no_border =
+      5; // compressed icon image no border (used on matching screen)
+  int64 timestamp = 6; // the new timestamp to update the client
+}
+
+// request server activities and categories specific request
+message ServerActivitiesResponse {
+  ReturnStatus return_status = 1;
+  repeated ServerActivityOrCategoryMessage server_categories = 2;
+  repeated ServerActivityOrCategoryMessage server_activities = 3;
+  int64 timestamp = 4; // the new timestamp to update the client
+}
+
+service RequestFieldsService {
+
+  // NOTE: these 2 request info from the server set by the admins, if an error
+  // occurs a single message will be sent back with the error code
+  rpc RequestServerIconsRPC(ServerIconsRequest)
+      returns (stream ServerIconsResponse) {
+  } // Checks to see if the user needs to download any new icons from the server
+  // This is not user specific info it is used to dynamically keep all users
+  // with up-to-date activities
+  rpc RequestServerActivitiesRPC(InfoFieldRequest)
+      returns (ServerActivitiesResponse) {
+  } // Checks to see if the user needs to download any new activities or
+    // categories from the server
+
+  rpc RequestPhoneNumberRPC(InfoFieldRequest) returns (InfoFieldResponse) {
+  } // Requests phone number info from the server
+  rpc RequestBirthdayRPC(InfoFieldRequest) returns (BirthdayResponse) {
+  } // Requests birthday info from the server
+  rpc RequestEmailRPC(InfoFieldRequest) returns (EmailResponse) {
+  } // Requests email address info from the server
+  rpc RequestGenderRPC(InfoFieldRequest) returns (InfoFieldResponse) {
+  } // Requests gender info from the server
+  rpc RequestNameRPC(InfoFieldRequest) returns (InfoFieldResponse) {
+  } // Requests gender info from the server
+  rpc RequestPicturesRPC(InfoArrayElementRequest) returns (PictureResponse) {
+  } // Requests pictures info from the server
+  rpc RequestCategoriesRPC(InfoFieldRequest) returns (CategoriesResponse) {
+  } // Requests categories info from the server
+
+  rpc RequestPostLoginInfoRPC(InfoFieldRequest)
+      returns (PostLoginInfoResponse) {
+  } // Requests everything after the login has been completed
+  // includes user bio, user city, gender range, age range, and max distance
+}

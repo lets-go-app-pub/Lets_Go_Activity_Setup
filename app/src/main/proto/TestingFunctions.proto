@@ -1,0 +1,51 @@
+syntax = "proto3";
+
+package testing_functions;
+
+message TestingFunctionsRequest {
+  enum Commands {
+    DO_NOTHING = 0;
+    INJECT_MESSAGE = 1;
+    SHUT_DOWN_SERVER = 2;
+  }
+
+  Commands commands = 1;
+  int64 time_for_request_to_run_in_millis = 2;
+
+  //need to be set for SHUT_DOWN_SERVER
+  int64 time_to_block_before_shut_down_in_millis = 3;
+
+  //need to be set for INJECT_MESSAGE
+  string user_account_oid = 4;
+  int64 time_for_inject_to_run_in_millis = 5;
+  string message_to_inject = 6;
+}
+
+message TestingFunctionsResponse {
+  bool received = 1;
+}
+
+message TestingServerStreamRequest {
+  int32 number_message_to_send_back = 1;
+  int64 delay_between_messages_in_ms = 2;
+}
+
+message TestingServerStreamResponse {
+  bool successful = 1;
+  bool message_number = 2;
+}
+
+message TestingClientStreamRequest {
+  int32 messages_remaining_to_be_sent = 1;
+  int64 delay_between_next_message_in_ms = 2;
+}
+
+message TestingClientStreamResponse {
+  bool successful = 1;
+}
+
+service TestingFunctionsService {
+  rpc TestingFunctionsRPC (TestingFunctionsRequest) returns (TestingFunctionsResponse) {}
+  rpc TestingServerStreamRPC (TestingServerStreamRequest) returns (stream TestingServerStreamResponse) {}
+  rpc TestingClientStreamRPC (stream TestingClientStreamRequest) returns (TestingClientStreamResponse) {}
+}
