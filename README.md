@@ -106,10 +106,9 @@ SetServerIconRequest.newBuilder()
 ---
 
 ## Related
-- **Server (C++)** — receives these admin commands: https://github.com/lets-go-app-pub/Lets_Go_Server  
-- **Desktop Admin (Qt)** — another admin surface: https://github.com/lets-go-app-pub/Lets_Go_Desktop_Interface  
-- **Protobuf Definitions** — shared contracts: https://github.com/lets-go-app-pub/Lets_Go_Protobuf
-
+- **Server (C++)** — stateless hub, gRPC/Protobuf, MongoDB  
+  👉 [`Lets_Go_Server`](https://github.com/lets-go-app-pub/Lets_Go_Server)
+  
 ## Status & compatibility
 Portfolio reference / internal admin tool. Android/Gradle versions may be legacy; gRPC endpoints are placeholders.
 
