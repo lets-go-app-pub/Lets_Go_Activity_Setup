@@ -108,6 +108,9 @@ SetServerIconRequest.newBuilder()
 ## Related
 - **Server (C++)** — stateless hub, gRPC/Protobuf, MongoDB  
   👉 [`Lets_Go_Server`](https://github.com/lets-go-app-pub/Lets_Go_Server)
+
+- **Docs & Deployment Notes** — release checklists, SSL testing, Mongo RS commands  
+  👉 [`Lets_Go_Docs`](https://github.com/lets-go-app-pub/Lets_Go_Docs)
   
 ## Status & compatibility
 Portfolio reference / internal admin tool. Android/Gradle versions may be legacy; gRPC endpoints are placeholders.
